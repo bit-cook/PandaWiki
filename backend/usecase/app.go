@@ -114,6 +114,13 @@ func (u *AppUsecase) ValidateUpdateApp(ctx context.Context, id string, req *doma
 	}
 
 	if !limitation.AllowAdvancedBot {
+		if req.Settings.WeChatAppAdvancedSetting.Prompt == "" {
+			req.Settings.WeChatAppAdvancedSetting.Prompt = domain.SystemDefaultPrompt
+		}
+		if app.Settings.WeChatAppAdvancedSetting.Prompt == "" {
+			app.Settings.WeChatAppAdvancedSetting.Prompt = domain.SystemDefaultPrompt
+		}
+		
 		if !slices.Equal(app.Settings.WechatServiceContainKeywords, req.Settings.WechatServiceContainKeywords) ||
 			!slices.Equal(app.Settings.WechatServiceEqualKeywords, req.Settings.WechatServiceEqualKeywords) ||
 			app.Settings.WechatServiceLogo != req.Settings.WechatServiceLogo {
@@ -126,10 +133,6 @@ func (u *AppUsecase) ValidateUpdateApp(ctx context.Context, id string, req *doma
 			!slices.Equal(app.Settings.WeChatAppAdvancedSetting.FeedbackType, req.Settings.WeChatAppAdvancedSetting.FeedbackType) ||
 			app.Settings.WeChatAppAdvancedSetting.DisclaimerContent != req.Settings.WeChatAppAdvancedSetting.DisclaimerContent {
 			return domain.ErrPermissionDenied
-		}
-	} else {
-		if req.Settings.WeChatAppAdvancedSetting.Prompt == "" {
-			req.Settings.WeChatAppAdvancedSetting.Prompt = domain.SystemDefaultPrompt
 		}
 	}
 
